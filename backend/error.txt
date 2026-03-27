@@ -1,0 +1,50 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.geu:findnet >---------------------------
+[INFO] Building findnet 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.5.0:clean (default-clean) @ findnet ---
+[INFO] Deleting A:\divyansh_daa\backend\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ findnet ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ findnet ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 15 source files with javac [debug parameters release 17] to target\classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[5,20] package com.sendgrid does not exist
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[6,20] package com.sendgrid does not exist
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[7,20] package com.sendgrid does not exist
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[8,20] package com.sendgrid does not exist
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[9,33] package com.sendgrid.helpers.mail does not exist
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[10,41] package com.sendgrid.helpers.mail.objects does not exist
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[11,41] package com.sendgrid.helpers.mail.objects does not exist
+[INFO] 7 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  6.404 s
+[INFO] Finished at: 2026-03-21T14:33:30+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.14.1:compile (default-compile) on project findnet: Compilation failure: Compilation failure: 
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[5,20] package com.sendgrid does not exist
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[6,20] package com.sendgrid does not exist
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[7,20] package com.sendgrid does not exist
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[8,20] package com.sendgrid does not exist
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[9,33] package com.sendgrid.helpers.mail does not exist
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[10,41] package com.sendgrid.helpers.mail.objects does not exist
+[ERROR] /A:/divyansh_daa/backend/src/main/java/com/geu/findnet/service/MatchEngineService.java:[11,41] package com.sendgrid.helpers.mail.objects does not exist
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
