@@ -1,6 +1,7 @@
 package com.geu.findnet.service;
 
 import com.geu.findnet.dto.LoginRequest;
+import com.geu.findnet.dto.OtpVerifyRequest;
 import com.geu.findnet.dto.RegisterRequest;
 import com.geu.findnet.entity.User;
 import com.geu.findnet.repository.UserRepository;
@@ -14,6 +15,9 @@ public class AuthService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private OtpService otpService;
 
     public User register(RegisterRequest request) {
         if (!request.getCollegeEmail().endsWith("@geu.ac.in")) {
@@ -38,7 +42,24 @@ public class AuthService {
             user.setRole(User.Role.USER);
         }
 
-        return userRepository.save(user);
+        User saved = userRepository.save(user);
+        otpService.generateAndSendOtp(saved);
+        return saved;
+    }
+
+    public boolean verifyOtp(OtpVerifyRequest request) {
+        User user = userRepository.findByCollegeEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return otpService.verifyOtp(user, request.getOtp());
+    }
+
+    public void resendOtp(String email) {
+        User user = userRepository.findByCollegeEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        if (user.isVerified()) {
+            throw new IllegalArgumentException("Email already verified");
+        }
+        otpService.generateAndSendOtp(user);
     }
 
     public User login(LoginRequest request) {
@@ -64,6 +85,10 @@ public class AuthService {
 
         if (!user.getPassword().equals(request.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password");
+        }
+
+        if (!user.isVerified()) {
+            throw new IllegalArgumentException("Email not verified. Please check your inbox for the OTP.");
         }
 
         return user;
