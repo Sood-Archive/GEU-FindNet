@@ -52,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/resend-otp")
-    public ResponseEntity<?> resendOtp(@RequestParam String email) {
+    public ResponseEntity<?> resendOtp(@RequestParam("email") String email) {
         try {
             authService.resendOtp(email);
             return ResponseEntity.ok("OTP resent to " + email);

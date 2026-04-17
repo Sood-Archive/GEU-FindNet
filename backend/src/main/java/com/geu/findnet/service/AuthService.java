@@ -25,7 +25,13 @@ public class AuthService {
         }
         
         if (userRepository.findByCollegeEmail(request.getCollegeEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email already registered");
+            // If already registered but unverified, resend OTP instead of erroring
+            User existing = userRepository.findByCollegeEmail(request.getCollegeEmail()).get();
+            if (!existing.isVerified()) {
+                otpService.generateAndSendOtp(existing);
+                throw new IllegalArgumentException("Email already registered");
+            }
+            throw new IllegalArgumentException("Email already registered and verified. Please login.");
         }
 
         User user = new User();

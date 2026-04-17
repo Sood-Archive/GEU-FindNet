@@ -23,7 +23,12 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       const errorData = err.response?.data;
-      setError(typeof errorData === 'string' ? errorData : (errorData?.message || 'Login failed.'));
+      const msg = typeof errorData === 'string' ? errorData : (errorData?.message || 'Login failed.');
+      if (msg.includes('Email not verified')) {
+        navigate('/verify-otp', { state: { email } });
+      } else {
+        setError(msg);
+      }
     }
   };
 

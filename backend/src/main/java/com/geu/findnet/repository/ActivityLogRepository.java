@@ -11,4 +11,5 @@ public interface ActivityLogRepository extends JpaRepository<ActivityLog, Long> 
     List<ActivityLog> findAllByOrderByTimestampDesc();
     List<ActivityLog> findByFilterCategoryOrderByTimestampDesc(String filterCategory);
     List<ActivityLog> findByUserIdOrderByTimestampDesc(Long userId);
+    List<ActivityLog> findByUserId(Long userId);
 }

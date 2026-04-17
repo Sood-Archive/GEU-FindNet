@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { AuthProvider, AuthContext } from './AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import VerifyOtpPage from './pages/VerifyOtpPage';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import './index.css';
@@ -31,6 +32,7 @@ function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/verify-otp" element={<VerifyOtpPage />} />
           
           <Route element={<ProtectedRoute requiredRole="USER" />}>
             <Route path="/dashboard/*" element={<Dashboard />} />

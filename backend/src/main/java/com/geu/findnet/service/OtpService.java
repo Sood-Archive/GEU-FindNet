@@ -39,11 +39,8 @@ public class OtpService {
         user.setOtp(otp);
         user.setOtpExpiry(LocalDateTime.now().plusMinutes(OTP_EXPIRY_MINUTES));
         userRepository.save(user);
-        // Send to personal email — college emails often have strict spam filters
-        String deliveryEmail = (user.getPersonalEmail() != null && !user.getPersonalEmail().isBlank())
-                ? user.getPersonalEmail()
-                : user.getCollegeEmail();
-        sendOtpEmail(deliveryEmail, otp);
+        // Send to college email for verification
+        sendOtpEmail(user.getCollegeEmail(), otp);
     }
 
     /** Returns true and marks user verified if OTP matches and hasn't expired. */
