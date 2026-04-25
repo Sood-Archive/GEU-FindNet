@@ -33,7 +33,7 @@ public class ItemController {
     private MatchEngineService matchEngineService;
 
     @PostMapping("/report")
-    public ResponseEntity<?> reportItem(@RequestParam Long userId, @RequestBody Item item) {
+    public ResponseEntity<?> reportItem(@RequestParam("userId") Long userId, @RequestBody Item item) {
         Optional<User> userOpt = userRepository.findById(userId);
         if (userOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("User not found");
@@ -63,13 +63,13 @@ public class ItemController {
     }
 
     @GetMapping("/my-activity")
-    public ResponseEntity<?> getUserActivity(@RequestParam Long userId) {
+    public ResponseEntity<?> getUserActivity(@RequestParam("userId") Long userId) {
         List<ActivityLog> logs = activityLogRepository.findByUserIdOrderByTimestampDesc(userId);
         return ResponseEntity.ok(logs);
     }
 
     @PostMapping("/return/{itemId}")
-    public ResponseEntity<?> returnItem(@PathVariable Long itemId, @RequestParam Long userId) {
+    public ResponseEntity<?> returnItem(@PathVariable("itemId") Long itemId, @RequestParam("userId") Long userId) {
         Optional<Item> itemOpt = itemRepository.findById(itemId);
         if (itemOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("Item not found");
