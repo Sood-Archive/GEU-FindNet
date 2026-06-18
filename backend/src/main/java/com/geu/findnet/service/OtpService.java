@@ -75,7 +75,7 @@ public class OtpService {
             return;
         }
         try {
-            Email from = new Email("simrannegi6666@gmail.com", "GEU FindNet");
+            Email from = new Email("shivankgarg664@gmail.com", "GEU FindNet");
             Email to = new Email(toEmail);
             String subject = "GEU FindNet – Email Verification OTP";
             Content content = new Content("text/plain",

@@ -69,7 +69,7 @@ public class AuthService {
     }
 
     public User login(LoginRequest request) {
-        if (request.getEmail().equals("admin@geu.ac.in") && request.getPassword().equals("admin1234")) {
+        if (request.getEmail().equals("admin@geu.ac.in") && request.getPassword().equals("admin@1234")) {
             Optional<User> adminOpt = userRepository.findByCollegeEmail("admin@geu.ac.in");
             if (adminOpt.isPresent()) {
                 return adminOpt.get();
@@ -80,7 +80,7 @@ public class AuthService {
                 admin.setStudentId("0000");
                 admin.setCollegeEmail("admin@geu.ac.in");
                 admin.setPersonalEmail("admin@geu.ac.in");
-                admin.setPassword("admin1234");
+                admin.setPassword("admin@1234");
                 admin.setRole(User.Role.ADMIN);
                 return userRepository.save(admin);
             }

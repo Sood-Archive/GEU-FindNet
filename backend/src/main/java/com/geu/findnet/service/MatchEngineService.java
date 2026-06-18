@@ -13,7 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,14 +38,18 @@ public class MatchEngineService {
 
     private Queue<Item> processQueue = new ConcurrentLinkedQueue<>();
 
+    @Async
+    @Transactional
     public void enqueueItemForProcessing(Item item) {
         processQueue.add(item);
-        processMatches(); // Synchronous call here for simplicity
+        processMatches();
     }
 
     private void processMatches() {
         while (!processQueue.isEmpty()) {
-            Item newItem = processQueue.poll();
+            Item queuedItem = processQueue.poll();
+            Item newItem = itemRepository.findById(queuedItem.getId()).orElse(null);
+            if (newItem == null) continue;
 
             List<Item> candidates;
             if (newItem.getType() == Item.ItemType.LOST_REPORT) {
@@ -55,7 +61,7 @@ public class MatchEngineService {
             for (Item candidate : candidates) {
                 double similarity = nlpService.calculateSimilarity(newItem.getDescription(), candidate.getDescription());
                 log.info("Similarity between '{}' and '{}': {}%", newItem.getName(), candidate.getName(), String.format("%.1f", similarity));
-                if (similarity > 40.0) {
+                if (similarity >= 60.0) {
                     sendMatchNotification(newItem, candidate);
                 }
             }
@@ -113,7 +119,7 @@ public class MatchEngineService {
 
     private void sendEmail(String toEmail, String subject, String body) {
         try {
-            Email from = new Email("simrannegi6666@gmail.com", "GEU FindNet");
+            Email from = new Email("shivankgarg664@gmail.com", "GEU FindNet");
             Email to = new Email(toEmail);
             Content content = new Content("text/plain", body);
             Mail mail = new Mail(from, subject, to, content);

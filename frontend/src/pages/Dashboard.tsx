@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, FormEvent } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext, api } from '../AuthContext';
 
 export default function Dashboard() {
@@ -10,6 +10,9 @@ export default function Dashboard() {
   const [itemData, setItemData] = useState({
     name: '',
     location: '',
+    category: '',
+    color: '',
+    condition: '',
     description: '',
     contactPhone: '',
     type: 'LOST_REPORT'
@@ -33,18 +36,26 @@ export default function Dashboard() {
     }
   }, [activeTab]);
 
-  const handleReport = async (e: FormEvent, type: 'LOST_REPORT' | 'FOUND_REPORT') => {
+  const handleReport = async (
+  e: React.FormEvent<HTMLFormElement>,
+  type: 'LOST_REPORT' | 'FOUND_REPORT'
+) =>  {
     e.preventDefault();
     setMsg('');
     try {
+      const fullDescription = `Category: ${itemData.category || 'Not specified'} | Color: ${itemData.color || 'Not specified'} | Condition: ${itemData.condition || 'Not specified'} | Notes: ${itemData.description}`;
+
       const payload = {
-        ...itemData,
+        name: itemData.name,
+        location: itemData.location,
+        description: fullDescription,
+        contactPhone: itemData.contactPhone,
         type,
         status: type === 'LOST_REPORT' ? 'LOST' : 'FOUND'
       };
       await api.post(`/items/report?userId=${user?.id}`, payload);
       setMsg(`${type === 'LOST_REPORT' ? 'Lost' : 'Found'} item reported successfully!`);
-      setItemData({ name: '', location: '', description: '', contactPhone: '', type: 'LOST_REPORT' });
+      setItemData({ name: '', location: '', category: '', color: '', condition: '', description: '', contactPhone: '', type: 'LOST_REPORT' });
     } catch (err) {
       setMsg('Failed to report item.');
     }
@@ -88,8 +99,48 @@ export default function Dashboard() {
               <input type="text" required value={itemData.location} onChange={e => setItemData({...itemData, location: e.target.value})} />
             </div>
             <div className="input-group">
-              <label>Description</label>
-              <textarea required rows={4} value={itemData.description} onChange={e => setItemData({...itemData, description: e.target.value})} />
+              <label>Category</label>
+              <select required style={{ padding: '10px', borderRadius: '4px', border: '1px solid var(--border-glass)', background: 'rgba(255, 255, 255, 0.5)', width: '100%', marginBottom: '10px', fontFamily: 'inherit' }} value={itemData.category} onChange={e => setItemData({...itemData, category: e.target.value})}>
+                <option value="">Select a category</option>
+                <option value="Electronics">Electronics (Phones, Laptops, Earbuds)</option>
+                <option value="Wallet/ID">Wallet or ID Card</option>
+                <option value="Keys">Keys</option>
+                <option value="Books/Stationery">Books or Stationery</option>
+                <option value="Bag/Backpack">Bag or Backpack</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div className="input-group">
+              <label>Primary Color</label>
+              <select required style={{ padding: '10px', borderRadius: '4px', border: '1px solid var(--border-glass)', background: 'rgba(255, 255, 255, 0.5)', width: '100%', marginBottom: '10px', fontFamily: 'inherit' }} value={itemData.color} onChange={e => setItemData({...itemData, color: e.target.value})}>
+                <option value="">Select a color</option>
+                <option value="Black">Black</option>
+                <option value="White">White</option>
+                <option value="Blue">Blue</option>
+                <option value="Red">Red</option>
+                <option value="Green">Green</option>
+                <option value="Brown/Leather">Brown / Leather</option>
+                <option value="Silver/Grey">Silver / Grey</option>
+                <option value="Multi/Other">Multicolor / Other</option>
+              </select>
+            </div>
+            <div className="input-group" style={{ marginBottom: '15px' }}>
+              <label>Condition</label>
+              <div style={{ display: 'flex', gap: '15px', marginTop: '5px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'normal' }}>
+                  <input type="radio" name="condition_lost" required value="Like New" checked={itemData.condition === 'Like New'} onChange={e => setItemData({...itemData, condition: e.target.value})} /> Like New
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'normal' }}>
+                  <input type="radio" name="condition_lost" required value="Used/Normal" checked={itemData.condition === 'Used/Normal'} onChange={e => setItemData({...itemData, condition: e.target.value})} /> Used / Normal
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'normal' }}>
+                  <input type="radio" name="condition_lost" required value="Damaged" checked={itemData.condition === 'Damaged'} onChange={e => setItemData({...itemData, condition: e.target.value})} /> Damaged
+                </label>
+              </div>
+            </div>
+            <div className="input-group">
+              <label>Description (Optional Notes)</label>
+              <textarea rows={3} value={itemData.description} placeholder="Any specific marks, brand name, etc." onChange={e => setItemData({...itemData, description: e.target.value})} />
             </div>
             <div className="input-group">
               <label>Contact Phone</label>
@@ -112,8 +163,48 @@ export default function Dashboard() {
               <input type="text" required value={itemData.location} onChange={e => setItemData({...itemData, location: e.target.value})} />
             </div>
             <div className="input-group">
-              <label>Description (Details)</label>
-              <textarea required rows={4} value={itemData.description} onChange={e => setItemData({...itemData, description: e.target.value})} />
+              <label>Category</label>
+              <select required style={{ padding: '10px', borderRadius: '4px', border: '1px solid var(--border-glass)', background: 'rgba(255, 255, 255, 0.5)', width: '100%', marginBottom: '10px', fontFamily: 'inherit' }} value={itemData.category} onChange={e => setItemData({...itemData, category: e.target.value})}>
+                <option value="">Select a category</option>
+                <option value="Electronics">Electronics (Phones, Laptops, Earbuds)</option>
+                <option value="Wallet/ID">Wallet or ID Card</option>
+                <option value="Keys">Keys</option>
+                <option value="Books/Stationery">Books or Stationery</option>
+                <option value="Bag/Backpack">Bag or Backpack</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div className="input-group">
+              <label>Primary Color</label>
+              <select required style={{ padding: '10px', borderRadius: '4px', border: '1px solid var(--border-glass)', background: 'rgba(255, 255, 255, 0.5)', width: '100%', marginBottom: '10px', fontFamily: 'inherit' }} value={itemData.color} onChange={e => setItemData({...itemData, color: e.target.value})}>
+                <option value="">Select a color</option>
+                <option value="Black">Black</option>
+                <option value="White">White</option>
+                <option value="Blue">Blue</option>
+                <option value="Red">Red</option>
+                <option value="Green">Green</option>
+                <option value="Brown/Leather">Brown / Leather</option>
+                <option value="Silver/Grey">Silver / Grey</option>
+                <option value="Multi/Other">Multicolor / Other</option>
+              </select>
+            </div>
+            <div className="input-group" style={{ marginBottom: '15px' }}>
+              <label>Condition</label>
+              <div style={{ display: 'flex', gap: '15px', marginTop: '5px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'normal' }}>
+                  <input type="radio" name="condition_found" required value="Like New" checked={itemData.condition === 'Like New'} onChange={e => setItemData({...itemData, condition: e.target.value})} /> Like New
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'normal' }}>
+                  <input type="radio" name="condition_found" required value="Used/Normal" checked={itemData.condition === 'Used/Normal'} onChange={e => setItemData({...itemData, condition: e.target.value})} /> Used / Normal
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'normal' }}>
+                  <input type="radio" name="condition_found" required value="Damaged" checked={itemData.condition === 'Damaged'} onChange={e => setItemData({...itemData, condition: e.target.value})} /> Damaged
+                </label>
+              </div>
+            </div>
+            <div className="input-group">
+              <label>Description (Optional Notes)</label>
+              <textarea rows={3} value={itemData.description} placeholder="Any specific marks, brand name, etc." onChange={e => setItemData({...itemData, description: e.target.value})} />
             </div>
             <div className="input-group">
               <label>Your Contact Phone</label>
