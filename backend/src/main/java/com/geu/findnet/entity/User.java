@@ -37,6 +37,15 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Column
+    private String otp;
+
+    @Column
+    private java.time.LocalDateTime otpExpiry;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean verified = false;
+
     public enum Role {
         USER, ADMIN
     }

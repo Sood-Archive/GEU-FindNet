@@ -1,6 +1,7 @@
 package com.geu.findnet.controller;
 
 import com.geu.findnet.dto.LoginRequest;
+import com.geu.findnet.dto.OtpVerifyRequest;
 import com.geu.findnet.dto.RegisterRequest;
 import com.geu.findnet.entity.User;
 import com.geu.findnet.service.AuthService;
@@ -33,6 +34,30 @@ public class AuthController {
             return ResponseEntity.ok(user);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(401).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody OtpVerifyRequest request) {
+        try {
+            boolean verified = authService.verifyOtp(request);
+            if (verified) {
+                return ResponseEntity.ok("Email verified successfully.");
+            } else {
+                return ResponseEntity.badRequest().body("Invalid or expired OTP.");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/resend-otp")
+    public ResponseEntity<?> resendOtp(@RequestParam("email") String email) {
+        try {
+            authService.resendOtp(email);
+            return ResponseEntity.ok("OTP resent to " + email);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

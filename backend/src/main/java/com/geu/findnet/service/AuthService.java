@@ -1,6 +1,7 @@
 package com.geu.findnet.service;
 
 import com.geu.findnet.dto.LoginRequest;
+import com.geu.findnet.dto.OtpVerifyRequest;
 import com.geu.findnet.dto.RegisterRequest;
 import com.geu.findnet.entity.User;
 import com.geu.findnet.repository.UserRepository;
@@ -15,13 +16,22 @@ public class AuthService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private OtpService otpService;
+
     public User register(RegisterRequest request) {
         if (!request.getCollegeEmail().endsWith("@geu.ac.in")) {
             throw new IllegalArgumentException("College email must end with @geu.ac.in");
         }
         
         if (userRepository.findByCollegeEmail(request.getCollegeEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email already registered");
+            // If already registered but unverified, resend OTP instead of erroring
+            User existing = userRepository.findByCollegeEmail(request.getCollegeEmail()).get();
+            if (!existing.isVerified()) {
+                otpService.generateAndSendOtp(existing);
+                throw new IllegalArgumentException("Email already registered");
+            }
+            throw new IllegalArgumentException("Email already registered and verified. Please login.");
         }
 
         User user = new User();
@@ -38,11 +48,28 @@ public class AuthService {
             user.setRole(User.Role.USER);
         }
 
-        return userRepository.save(user);
+        User saved = userRepository.save(user);
+        otpService.generateAndSendOtp(saved);
+        return saved;
+    }
+
+    public boolean verifyOtp(OtpVerifyRequest request) {
+        User user = userRepository.findByCollegeEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return otpService.verifyOtp(user, request.getOtp());
+    }
+
+    public void resendOtp(String email) {
+        User user = userRepository.findByCollegeEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        if (user.isVerified()) {
+            throw new IllegalArgumentException("Email already verified");
+        }
+        otpService.generateAndSendOtp(user);
     }
 
     public User login(LoginRequest request) {
-        if (request.getEmail().equals("admin@geu.ac.in") && request.getPassword().equals("admin1234")) {
+        if (request.getEmail().equals("admin@geu.ac.in") && request.getPassword().equals("admin@1234")) {
             Optional<User> adminOpt = userRepository.findByCollegeEmail("admin@geu.ac.in");
             if (adminOpt.isPresent()) {
                 return adminOpt.get();
@@ -53,7 +80,7 @@ public class AuthService {
                 admin.setStudentId("0000");
                 admin.setCollegeEmail("admin@geu.ac.in");
                 admin.setPersonalEmail("admin@geu.ac.in");
-                admin.setPassword("admin1234");
+                admin.setPassword("admin@1234");
                 admin.setRole(User.Role.ADMIN);
                 return userRepository.save(admin);
             }
@@ -64,6 +91,10 @@ public class AuthService {
 
         if (!user.getPassword().equals(request.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password");
+        }
+
+        if (!user.isVerified()) {
+            throw new IllegalArgumentException("Email not verified. Please check your inbox for the OTP.");
         }
 
         return user;
